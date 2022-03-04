@@ -74,4 +74,7 @@ Rules (different game rules for shape 3x3 and bigger)
 
 Console (client)
 - Field (from GameSession)
+- Connect to a session
+- Place X or O in empty cell
 - Update field (with new info from GameSession)
+- Show result of a session
