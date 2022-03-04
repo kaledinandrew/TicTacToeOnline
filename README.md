@@ -49,6 +49,7 @@ User
 - Id
 - Nickname
 - OpenedSessions
+
 - Start a session
 - Finish a session
 - Place X or O
@@ -59,6 +60,7 @@ GameSession
 - GameField (with X, O or nothing in every cell)
 - Duration
 - Result
+
 - Check if session is finished
 
 GameField
@@ -73,7 +75,8 @@ Rules (different game rules for shape 3x3 and bigger)
 - WhenLose
 
 Console (client)
-- Field (from GameSession)
+- Field (from GameField)
+
 - Connect to a session
 - Place X or O in empty cell
 - Update field (with new info from GameSession)
