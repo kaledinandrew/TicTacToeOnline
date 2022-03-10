@@ -42,39 +42,3 @@
 4. Как игрок, я хочу ставить свои рекорды и бить чужие (например, рекордом будет считаться 2-3 победы на поле размером > 3. Для этого, кстати, можно было бы придумать другие правила <== надо думать).
 5. Как опытный игрок, я также хочу, чтобы мои рекорды были доступны всем в рейтинговой таблице.
 6. Как опытный игрок, я хочу играть с игроками моего уровня.
-
-
-## CRC-cards
-User
-- Id
-- Nickname
-- OpenedSessions
-- Start a session
-- Finish a session
-- Place X or O
-
-GameSession
-- Id
-- HostId, GuestId (= None or SpecialId if PvE)
-- GameField (with X, O or nothing in every cell)
-- Duration
-- Result
-- Check if session is finished
-
-GameField
-- Shape
-- Field with X and O positions
-- Rules
-
-Rules (different game rules for shape 3x3 and bigger)
-- Shape
-- WhenVictory
-- WhenDraw
-- WhenLose
-
-Console (client)
-- Field (from GameSession)
-- Connect to a session
-- Place X or O in empty cell
-- Update field (with new info from GameSession)
-- Show result of a session
