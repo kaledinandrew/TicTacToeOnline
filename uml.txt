@@ -1,0 +1,106 @@
+@startuml
+class SessionObserver {
+  +getUpdate()
+  +postUpdate()
+}
+
+class User {
+  ~id: int
+  ~symbol: char/str
+  ~nickname: str
+  +start_session()
+  +finish_session()
+  +place()
+}
+
+class GameField {
+  -{field} size: tuple(int, int)
+  -field: matrix[optional]
+  -rule: Rules
+  +if_finished()
+  +onUpdate()
+}
+
+class GameSession {
+  ~mode: str
+  ~{field} playersId: tuple(int, int)
+  ~field: GameField
+  ~duration: time type
+  ~result: optional
+  +get_result()
+  +onUpdate()
+}
+
+
+interface Rules {
+  ~whenVictory: optional
+  ~whenDraw: optional
+  ~whenLose: optional
+}
+
+class StandardRules implements Rules {
+}
+
+class CustomRules implements Rules {
+}
+
+class Console {
+  ~session: GameSession
+  +connect()
+  +update_field()
+  +place_symbol()
+  +show_result()
+  +show_field()
+}
+
+class UserRepository implements JpaRepository {
+  +getUserById()
+  +getAllUsers()
+  +saveUser()
+  +updateUser()
+  +deleteUser()
+}
+
+class GameSessionRepository implements JpaRepository {
+  +getGameSessionById()
+  +saveGameSession()
+  +updateGameSession()
+  +deleteGameSession()
+}
+
+class UserController {
+  +getUserById()
+  +getAllUsers()
+  +saveUser()
+  +updateUser()
+  +deleteUser()
+}
+
+class GameSessionController {
+  +getGameSessionById()
+  +saveGameSession()
+  +updateGameSession()
+  +deleteGameSession()
+}
+
+class UserClient {
+  +createNewUser()
+  +updateUser()
+  +deleteUser()
+}
+
+User  " 1..2  "  o-- " *  "  GameSession
+
+GameField " * " *-- " 1 " Rules
+GameSession " 1 " *-- " 1 " GameField
+
+GameSession <-- Console
+
+UserRepository <-- UserController: использует
+GameSessionRepository <-- GameSessionController: использует
+GameSessionController <-- SessionObserver: вызывает
+UserController <-- UserClient: вызывает
+UserClient <-- Console: использует
+SessionObserver <-- Console: использует
+
+@enduml
