@@ -94,7 +94,7 @@ User  " 1..2  "  o-- " *  "  GameSession
 GameField " * " *-- " 1 " Rules
 GameSession " 1 " *-- " 1 " GameField
 
-GameSession <-- Console
+GameSession <-- GameSessionController
 
 UserRepository <-- UserController: использует
 GameSessionRepository <-- GameSessionController: использует
