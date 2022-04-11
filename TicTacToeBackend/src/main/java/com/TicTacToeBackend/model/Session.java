@@ -25,11 +25,11 @@ public class Session {
     private Long sessionId;
 
     @ManyToOne // owner
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "host_id", nullable = false)
     private User host;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "guest_id", nullable = false)
     private User guest;
 
     // Field format: "1,2,3;4,5,6;7,8,9"
