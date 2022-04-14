@@ -1,15 +1,15 @@
 package com.TicTacToeBackend.model;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Field {
-
-    private Long width;
-
-    private Long height;
 
     private List<List<Long>> matrix;
 

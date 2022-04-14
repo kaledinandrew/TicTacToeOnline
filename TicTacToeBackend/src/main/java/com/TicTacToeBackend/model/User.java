@@ -22,17 +22,20 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "host")
-    private Set<Session> hostingSessions;
+    @Column(name = "symbol")
+    private Long symbol;
 
-    @OneToMany(mappedBy = "guest")
-    private Set<Session> guestingSessions;
+//    @OneToMany(mappedBy = "host")
+//    private Set<Session> hostingSessions;
+//
+//    @OneToMany(mappedBy = "guest")
+//    private Set<Session> guestingSessions;
 
-    public User(Long userId, String name) {
-        this.userId = userId;
+    public User(String name, Long symbol) {
         this.name = name;
-        this.hostingSessions = new HashSet<>();
-        this.guestingSessions = new HashSet<>();
+        this.symbol = symbol;
+//        this.hostingSessions = new HashSet<>();
+//        this.guestingSessions = new HashSet<>();
     }
 
 }

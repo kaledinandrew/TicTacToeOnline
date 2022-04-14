@@ -14,6 +14,10 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="symbol" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
         </createTable>
     </changeSet>
 
@@ -23,39 +27,44 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="field" type="text">
-            </column>
+            <column name="field" type="text"/>
+
+            <column name="host_id" type="BIGINT"/>
+
+            <column name="guest_id" type="BIGINT"/>
+
+            <column name="is_host_turn" type="boolean"/>
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.2" author="andrew">
-        <createTable tableName="user_sessions">
-            <column name="user_id" type="BIGINT">
-            </column>
+<!--    <changeSet id="1.0.2" author="andrew">-->
+<!--        <createTable tableName="user_sessions">-->
+<!--            <column name="user_id" type="BIGINT">-->
+<!--            </column>-->
 
-            <column name="session_id" type="BIGINT">
-            </column>
-        </createTable>
-    </changeSet>
+<!--            <column name="session_id" type="BIGINT">-->
+<!--            </column>-->
+<!--        </createTable>-->
+<!--    </changeSet>-->
 
-    <changeSet id="1.0.3" author="andrew">
-        <addForeignKeyConstraint baseColumnNames="user_id"
-                                 baseTableName="user_sessions"
-                                 constraintName="fk_user_sessions_users"
-                                 onDelete="CASCADE"
-                                 onUpdate="RESTRICT"
-                                 referencedColumnNames="user_id"
-                                 referencedTableName="users"/>
-    </changeSet>
+<!--    <changeSet id="1.0.3" author="andrew">-->
+<!--        <addForeignKeyConstraint baseColumnNames="user_id"-->
+<!--                                 baseTableName="user_sessions"-->
+<!--                                 constraintName="fk_user_sessions_users"-->
+<!--                                 onDelete="CASCADE"-->
+<!--                                 onUpdate="RESTRICT"-->
+<!--                                 referencedColumnNames="user_id"-->
+<!--                                 referencedTableName="users"/>-->
+<!--    </changeSet>-->
 
-    <changeSet id="1.0.4" author="andrew">
-        <addForeignKeyConstraint baseColumnNames="session_id"
-                                 baseTableName="user_sessions"
-                                 constraintName="fk_user_sessions_sessions"
-                                 onDelete="CASCADE"
-                                 onUpdate="RESTRICT"
-                                 referencedColumnNames="session_id"
-                                 referencedTableName="sessions"/>
-    </changeSet>
+<!--    <changeSet id="1.0.4" author="andrew">-->
+<!--        <addForeignKeyConstraint baseColumnNames="session_id"-->
+<!--                                 baseTableName="user_sessions"-->
+<!--                                 constraintName="fk_user_sessions_sessions"-->
+<!--                                 onDelete="CASCADE"-->
+<!--                                 onUpdate="RESTRICT"-->
+<!--                                 referencedColumnNames="session_id"-->
+<!--                                 referencedTableName="sessions"/>-->
+<!--    </changeSet>-->
 
 </databaseChangeLog>
