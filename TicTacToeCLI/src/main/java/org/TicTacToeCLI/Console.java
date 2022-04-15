@@ -7,36 +7,11 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
 public class Console implements SessionObserver {
-
-    // connect to port, port/users, ...
-    // need to be disconnected later
-    public HttpURLConnection connectToSession(String link) throws IOException {
-        URL url = null;
-        HttpURLConnection connection = null;
-
-        try {
-            url = new URL(link);
-        } catch (MalformedURLException e) {
-            System.out.println("Undefined URL given!");
-            e.printStackTrace();
-            return null;
-        }
-
-        connection = (HttpURLConnection) url.openConnection();
-
-        int code = connection.getResponseCode();
-        if (HttpURLConnection.HTTP_OK == code) {
-            System.out.println("OK 200");
-            return connection;
-        } else {
-            System.out.printf("Failed with %d\n", code);
-            return null;
-        }
-    }
 
     @Override // suppose connection code == 200
     public String getUpdate(HttpURLConnection connection) throws Exception {
@@ -62,7 +37,7 @@ public class Console implements SessionObserver {
 
     // https://www.youtube.com/watch?v=pc_jrANrjUc&list=PL81zTpL449O1KU5CCjGGqLXoxqZQj6pNr&index=11
     @Override // suppose connection code == 200
-    public void postUpdate(HttpURLConnection connection, Map<String, Object> parameters) throws Exception{
+    public String postUpdate(HttpURLConnection connection, Map<String, Object> parameters) throws Exception{
         // check if connection is valid
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
@@ -95,49 +70,89 @@ public class Console implements SessionObserver {
             stringBuilder.append(line);
         }
 
-        System.out.println(stringBuilder.toString());
-
         // try-catch
         isR.close();
         bfR.close();
         os.close();
 
+        return stringBuilder.toString();
+    }
+
+    public String startSession(String hostId) throws Exception {
+        var connection = Connection.connect(SESSIONS_LINK + "/?hostId=" + hostId);
+
+        Map<String, Object> parameters  = new HashMap<>();
+        // empty POST
+        String response = this.postUpdate(connection, parameters);
+        return response;
+    }
+
+    // need to be disconnected later
+    public HttpURLConnection connectToSession(String sessionId, String guestId) throws Exception {
+        var connection = Connection.connect(SESSIONS_CONNECT_LINK +
+                "/?sessionId=" + sessionId + "&guestId=" + guestId);
+
+        Map<String, Object> parameters  = new HashMap<>();
+
+        // empty POST
+        String response = this.postUpdate(connection, parameters);
+        System.out.println(response);
+        return connection;
     }
 
     // POST/PATCH
     public void updateField() throws Exception {} // ???
 
     // POST/PATCH
-    public void placeSymbol(int x, int y) throws Exception {
+    public void placeSymbol(String sessionId, String userId, Integer x, Integer y) throws Exception {
         // check if x, y are valid
+        var connection = Connection.connect(SERVER_LINK +
+                "/?sessionId=" + sessionId + "&userId=" + userId +
+                "&x=" + x.toString() + "&y=" + y.toString());
 
+        // empty POST
         Map<String, Object> parameters  = new HashMap<>();
-        parameters.put("point", new int[] {x, y});
-        // ...
-        var connection = this.connectToSession(SERVER_LINK + "/field"); // exmpl
-        this.postUpdate(connection, parameters);
+        String response = this.postUpdate(connection, parameters);
+        System.out.println(response);
     }
 
     // GET
-    public void showField() throws Exception {
-        var connection = this.connectToSession(SERVER_LINK + "/field"); // exmpl
-        var output = this.getUpdate(connection);
-        // ... -- parse string
-        int n, m; // exmpl shape
-        n = 3; m = 3;
-        int[][] field = new int[m][n]; // exmpl
+    public int showField(HttpURLConnection connection) throws Exception {
+        String output = this.getUpdate(connection);
 
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                // some king of visualization
-                break;
+        Map<String, Object> mp = JsonParser.parseJSON(output);
+        String mat = mp.get("field").toString();
+        ArrayList<ArrayList<Integer>> matrix = JsonParser.parseField(mat);
+        int m = matrix.size();
+        int n = matrix.get(0).size();
+
+        // visualize field
+        {
+            for (int i = 0; i < n; i++) {
+                System.out.printf("\t%d", i);
+            }
+
+            System.out.println();
+
+            for (int i = 0; i < m; i++) {
+                for (int j = -1; j < n; j++) {
+                    if (j == -1) {
+                        System.out.printf("%d", i);
+                    } else {
+                        System.out.printf("\t%d", matrix.get(i).get(j));
+                    }
+                }
+                System.out.println();
             }
         }
+
+        // to void
+        return m * n;
     }
 
     // GET
     public String showResult() throws Exception {
-        var connection = this.connectToSession(SERVER_LINK + "/field"); // exmpl
+        var connection = Connection.connect(SERVER_LINK + "/field"); // exmpl
         var output = this.getUpdate(connection);
         // ... -- parse string
         String result = "";
