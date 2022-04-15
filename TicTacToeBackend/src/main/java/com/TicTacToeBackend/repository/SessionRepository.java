@@ -11,4 +11,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
     List<Session> findAll();
 
+    Session findFirstBySessionId(Long id);
+
 }

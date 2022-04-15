@@ -24,59 +24,46 @@ public class Session {
     @Column(name = "session_id")
     private Long sessionId;
 
-    @ManyToOne // owner
-    @JoinColumn(name = "host_id", nullable = false)
-    private User host;
+//    @ManyToOne // owner
+//    @JoinColumn(name = "host_id", nullable = false)
+//    private User host;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "guest_id")
+//    private User guest;
 
-    @ManyToOne
-    @JoinColumn(name = "guest_id", nullable = false)
-    private User guest;
+    @Column(name = "host_id")
+    private Long hostId;
+
+    @Column(name = "guest_id")
+    private Long guestId;
 
     // Field format: "1,2,3;4,5,6;7,8,9"
     @Column(name = "field")
     private String field;
 
-    public Field getField() {
-        String[] params = field.split(";");
-        Field field = new Field();
+    @Column(name = "isHostTurn")
+    private Boolean isHostTurn;
 
-        field.setHeight(Long.valueOf(params[0]));
-        field.setWidth(Long.valueOf(params[1]));
+    public List<List<Long>> getField() {
+        List<List<Long>> matrix = Arrays.stream(field.split(";"))
+                .map(
+                        row -> Arrays.stream(row.split(",")).map(Long::parseLong).toList()
+                ).toList();
+        return matrix;
+    }
 
-        List<List<Long>> matrix = new ArrayList<>();
-        for (int i = 0; i < field.getHeight(); i++) {
-            matrix.add(
-                    Arrays.stream(params[i + 2].split(","))
-                            .map(Long::parseLong)
-                            .collect(Collectors.toList())
-            );
-        }
-        field.setMatrix(matrix);
-        return field;
+    public void setField(List<List<Long>> field) {
+        this.field = String.join(
+                ";",
+                field.stream()
+                        .map(
+                                row -> String.join(",", row.stream().map(Object::toString).toList())
+                        ).toList()
+        );
     }
 
     public void setField(String field) {
         this.field = field;
-    }
-
-    public void setField(Field field) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(field.getHeight() + ';');
-        builder.append(field.getWidth() + ';');
-        for (var row : field.getMatrix()) {
-            builder.append(rowToString(row)).append(';');
-        }
-        this.field = builder.toString();
-    }
-
-    private String rowToString(List<Long> row) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < row.size(); i++) {
-            builder.append(row.get(i));
-            if (i < row.size() - 1) {
-                builder.append(',');
-            }
-        }
-        return builder.toString();
     }
 }

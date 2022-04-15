@@ -8,11 +8,11 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
 
-    private Long id;
-
     private String name;
 
+    private Long symbol;
+
     public User toUser() {
-        return new User(id, name);
+        return new User(name, symbol);
     }
 }
