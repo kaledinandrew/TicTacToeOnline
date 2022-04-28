@@ -1,6 +1,5 @@
 package com.TicTacToeBackend.dto;
 
-import com.TicTacToeBackend.model.Session;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 

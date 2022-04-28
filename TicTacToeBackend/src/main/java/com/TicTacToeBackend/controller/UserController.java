@@ -6,6 +6,7 @@ import com.TicTacToeBackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,11 +23,18 @@ public class UserController {
 
     @GetMapping("")
     public User getUserById(@RequestParam(value = "userId") Long userId) {
-        return userRepository.findFirstByUserId(userId);
+        User user = userRepository.findFirstByUserId(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("User with userId = " + userId + " not found");
+        }
+        return user;
     }
 
     @PostMapping("")
-    public User createUser(@RequestBody UserDto dto) {
+    public User createUser(@Valid @RequestBody UserDto dto) {
+        if (dto == null || dto.getName() == null || dto.getSymbol() == null || dto.getName().isEmpty()) {
+            throw new IllegalArgumentException("Request body is not valid");
+        }
         return userRepository.save(dto.toUser());
     }
 
