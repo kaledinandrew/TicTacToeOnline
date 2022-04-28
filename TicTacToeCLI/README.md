@@ -17,7 +17,7 @@
 * Мелкие архитектурные и конструктивные правки
 
 ## Источники информации
-* [Как создать проект (для Дианы)](https://www.youtube.com/watch?v=dxn5DsMWhGY)
+* [Самая полезная статья про POST](https://javascopes.com/how-to-send-http-requests-in-java-301bb159/)
 * [Метод POST (видео)](https://www.youtube.com/watch?v=pc_jrANrjUc&list=PL81zTpL449O1KU5CCjGGqLXoxqZQj6pNr&index=11)
 * [Старые песни о главном. Java и исходящие запросы (статья)](https://habr.com/ru/company/umbrellaitcom/blog/423591/)
 * [Как отправить HTTP-запрос GET / POST в Java (статья)](https://russianblogs.com/article/35471062972/)
