@@ -75,6 +75,20 @@ public class JsonParser {
         return matrix;
     }
 
+//    public static ArrayList<ArrayList<Integer>> parseFieldToTable(String stringList) {
+//        int[][] matrix = new int[][];
+//
+//        for (String l: stringList.split("\\]\\s*,\\s*\\[")) {
+//            l = l.replaceAll("\\[", "").replaceAll("\\]", "").toString();
+//            matrix.add(new ArrayList<Integer>());
+//            for (String s : l.split(", ")) {
+//                matrix.get(matrix.size() - 1).add(Integer.valueOf(s));
+//            }
+//        }
+//
+//        return matrix;
+//    }
+
     public static int getSessionId(String jsonString) {
         Map<String, Object> map = parseJSON(jsonString);
         return (int) map.get("sessionId");

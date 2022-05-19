@@ -68,10 +68,14 @@ public class FrontendMain {
             default -> throw new Exception("ИДИ УЧИ УРОКИ\nargument required: create|connect");
         }
         System.out.println("role:"+role+"\nsessionId:"+sessionId+"\nuserId:"+userId);
-        String sessionInfo = consoleClient.getSessionInfo(sessionId);
         while (true){
-            sessionInfo = consoleClient.getSessionInfo(sessionId);
-            System.out.println(JsonParser.parseJSON(sessionInfo).get("field"));
+            String sessionInfo = consoleClient.getSessionInfo(sessionId);
+            System.out.println(
+                    GameField.toString_(
+                            (ArrayList<ArrayList<Integer>>) JsonParser.parseJSON(sessionInfo).get("field")
+                    )
+            );
+            System.out.flush();
             if (!JsonParser.parseJSON(sessionInfo).get("result").equals(JsonParser.ResultValues.NOT_FINISHED.name())) {
                 System.out.println(JsonParser.parseJSON(sessionInfo).get("result"));
                 break;

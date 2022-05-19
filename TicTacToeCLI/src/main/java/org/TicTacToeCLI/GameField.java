@@ -1,10 +1,14 @@
 package org.TicTacToeCLI;
 
-public class GameField {
-	private Character[][] table;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-	public GameField(int height, int width) {
-		table = new Character[height * 2 + 1][width * 4 + 1];
+public class GameField {
+
+	public static String toString_(ArrayList<ArrayList<Integer>> old) {
+		int height = old.size();
+		int width = old.get(0).size();
+		Character[][] table = new Character[height * 2 + 1][width * 4 + 1];
 		for (int i = 0; i < table.length; i++) {
 			for (int j = 0; j < table[i].length; j++) {
 				if (i % 2 == 0 && j % 4 == 0) {
@@ -16,17 +20,25 @@ public class GameField {
 				} else {
 					table[i][j] = ' ';
 				}
-
 			}
 		}
-	}
 
-	public void putCharacter(Character c, int height, int width) {
-		table[height * 2 + 1][width * 4 + 2] = c;
-	}
+		HashMap<Integer, Character> m = new HashMap<>();
 
-	@Override
-	public String toString() {
+		m.put(111, 'o');
+		m.put(120, 'x');
+		m.put(0, ' ');
+
+		height = 0;
+		for (ArrayList<Integer> list : old) {
+			width = 0;
+			for (Integer i :list) {
+				table[height * 2 + 1][width * 4 + 2] = m.get(i);
+				width++;
+			}
+			height++;
+		}
+
 		StringBuilder res = new StringBuilder();
 		for (Character[] line : table) {
 			for (Character c : line) {
@@ -36,4 +48,13 @@ public class GameField {
 		}
 		return res.toString();
 	}
+
+//	public void putCharacter(Character c, int height, int width) {
+//
+//	}
+
+//	@Override
+//	public String toString() {
+//
+//	}
 }
