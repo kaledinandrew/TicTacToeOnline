@@ -78,6 +78,10 @@ public class SessionController {
         if (session == null) {
             throw new IllegalArgumentException("Session with sessionId = " + sessionId + " not found");
         }
+        if (session.getIsHostTurn() && userId.equals(session.getGuestId()) ||
+                !session.getIsHostTurn() && userId.equals(session.getHostId())) {
+            throw new IllegalArgumentException("Invalid request: turn for another user");
+        }
 
         if (x < 0 || x > session.getField().size() || y < 0 || y > session.getField().get(0).size()) {
             throw new IllegalArgumentException("Cell (x = " + x + "; y = " + y + ") is invalid");
@@ -101,7 +105,7 @@ public class SessionController {
             updatedField.add(tmp);
         }
         session.setField(updatedField);
-        session.setResult(updateResultService.getCurrentResult(session, x, y));
+        session.setResult(updateResultService.getCurrentResult(session.getField(), session.getIsHostTurn(), x, y));
         session.setIsHostTurn(!session.getIsHostTurn());
         return sessionRepository.save(session);
     }
