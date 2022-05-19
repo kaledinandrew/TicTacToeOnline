@@ -1,11 +1,13 @@
 package com.TicTacToeBackend.service;
 
 import com.TicTacToeBackend.model.Session;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static java.lang.Math.min;
 
+@Service
 public class UpdateResultService {
 
     private enum ResultValues {

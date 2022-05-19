@@ -96,6 +96,6 @@ class SessionControllerTest {
     }
 
     private Session createSession() {
-        return new Session(1L, 2L, 3L, "", true);
+        return new Session(1L, 2L, 3L, "", true, "NOT_FINISHED");
     }
 }

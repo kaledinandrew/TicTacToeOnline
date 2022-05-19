@@ -44,6 +44,7 @@ public class SessionController {
         session.setHostId(hostId);
         session.setField("0,0,0;0,0,0;0,0,0");
         session.setIsHostTurn(true);
+        session.setResult("NOT_FINISHED");
         return sessionRepository.save(session);
     }
 
