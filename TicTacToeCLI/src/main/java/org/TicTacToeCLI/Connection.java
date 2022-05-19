@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Connection {
+
     public static HttpURLConnection connect(String link) {
         URL url = null;
         HttpURLConnection connection = null;
@@ -13,32 +14,20 @@ public class Connection {
         try {
             url = new URL(link);
         } catch (MalformedURLException e) {
-            System.out.println("Undefined URL given!");
+            System.out.println("Неопознанный URL");
             e.printStackTrace();
-            return null;
+            System.exit(1);
         }
 
         try {
             connection = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
-            System.out.println("Connection failed!");
+            System.out.println("Не удалось поключиться к серверу");
             e.printStackTrace();
-            return null;
+            System.exit(1);
         }
 
-        int code = 0;
-        try {
-            code = connection.getResponseCode();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (HttpURLConnection.HTTP_OK == code) {
-            System.out.println("OK 200");
-            return connection;
-        } else {
-            System.out.printf("Failed with %d\n", code);
-            return null;
-        }
+        return connection;
     }
+
 }

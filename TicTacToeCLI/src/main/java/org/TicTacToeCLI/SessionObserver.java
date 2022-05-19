@@ -1,9 +1,9 @@
 package org.TicTacToeCLI;
 
 import java.net.HttpURLConnection;
-import java.util.Map;
 
 public interface SessionObserver {
-    public String getUpdate(HttpURLConnection connection) throws Exception;
-    public String postUpdate(HttpURLConnection connection, Map<String, Object> parameters) throws Exception;
+    public String getUpdate(HttpURLConnection connection);
+    public String postUpdate(HttpURLConnection connection, String jsonInputString);
+    public String putUpdate(HttpURLConnection connection, String jsonInputString);
 }

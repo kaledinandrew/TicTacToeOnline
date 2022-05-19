@@ -2,9 +2,16 @@ package org.TicTacToeCLI;
 
 import org.TicTacToeCLI.*;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Scanner;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URLEncoder;
+import java.util.*;
+
+import static org.TicTacToeCLI.Connection.connect;
+import static org.TicTacToeCLI.Variables.*;
+
+import java.net.URL;
 
 
 public class FrontendMain {
@@ -14,82 +21,86 @@ public class FrontendMain {
     }
 
     public static void main(String[] args) throws Exception {
+
         UserClient userClient = new UserClient();
         Console consoleClient = new Console();
+        int hostId;
+        int guestId;
+        int sessionId;
 
-        System.out.println("Добро пожаловать в TicTacToeOnline!");
-        System.out.println("Введите имя пользователя и желаемый символ (числовой):");
+//        Эти пользователи и сессия уже существуют
+//        hostId = 13;
+//        guestId = 16;
+//        System.out.println(userClient.getUserInfo(hostId));
+//        System.out.println(userClient.getUserInfo(guestId));
+//        sessionId = 9;
 
+//       Можно создать новые
         Scanner in = new Scanner(System.in);
-        String name = in.nextLine();
-        int symbol = in.nextInt();
-        in.close();
+        Scanner in_num = new Scanner(System.in);
+        String name = "";
+        int symbol = 0;
+        String sessionInfo = "";
 
-        String userId = "";
-        String userResponse = userClient.createUser(name, symbol);
+        System.out.println("Ввод имени и символа первого игрока (хоста):");
+        name = in.nextLine();
+        symbol = in_num.nextInt();
+        hostId = JsonParser.getUserId(userClient.createUser(name, symbol));
 
-        if (!userResponse.isEmpty()) {
-            userId = JsonParser.parseJSON(userResponse).get("useId").toString();
-            System.out.println("Пользователь успешно создан!");
-        } else {
-            System.out.println("Не удалось создать пользователя!");
-            System.exit(1);
-        }
+        System.out.println("Ввод имени и символа второго игрока (гостя):");
+        name = in.nextLine();
+        symbol = in_num.nextInt();
+        guestId = JsonParser.getUserId(userClient.createUser(name, symbol));
 
-        String botId = "";
-        String botResponse = userClient.createUser("Steve Vai", 9);
-        if (!botResponse.isEmpty()) {
-            botId = JsonParser.parseJSON(botResponse).get("useId").toString();
-            System.out.println("Бот успешно создан!");
-        } else {
-            System.out.println("Не удалось создать бота!");
-            System.exit(1);
-        }
+        System.out.println(userClient.getUserInfo(hostId));
+        System.out.println(userClient.getUserInfo(guestId));
 
-        String response = consoleClient.startSession(userId);
-        String sessionId = JsonParser.parseJSON(response).get("sessionId").toString();
+        // Хост создает сессию
+        sessionInfo = consoleClient.startSession(hostId);
+        System.out.println(sessionInfo);
+        sessionId = JsonParser.getSessionId(sessionInfo);
 
-        var connection = consoleClient.connectToSession(sessionId, botId);
-        if (Objects.nonNull(connection)) {
-            System.out.println("Игра началась!");
-        } else {
-            System.exit(1);
-        }
 
-        int filledCells = 0;
-        int mn = consoleClient.showField(connection);
+        System.out.printf("SessionId = %d\n", sessionId);
 
-        int coin = 1;
+        // Гость подключается к сессии
+        String sessionConnectInfo = consoleClient.connectToSession(sessionId, guestId);
+        // System.out.println(sessionConnectInfo);
 
-        while (filledCells != mn) {
-            clearScreen();
-            consoleClient.showField(connection);
+        System.out.println("Start the game!\n");
+        for (int i = 0; i < 9; i++) {
+            String sessionInfoGame = consoleClient.getSessionInfo(sessionId);
+            Boolean turn = JsonParser.getTurn(sessionInfoGame);
 
-            if (coin == 1) {
-                System.out.println("Ход игрока\nВвод координат:");
-                in = new Scanner(System.in);
-                Integer x = in.nextInt();
-                Integer y = in.nextInt();
-                in.close();
+            String gameInfo = "";
+            if (turn) {
+                System.out.println("Хост делает ход");
+                System.out.println("Ввод координат x, y:");
+                int x = in_num.nextInt();
+                int y = in_num.nextInt();
 
-                // check if x, y are valid ...
-                consoleClient.placeSymbol(sessionId, userId, x, y);
-                coin = 0;
+                gameInfo = consoleClient.placeSymbol(sessionId, hostId, x, y);
             } else {
-                System.out.println("Ход бота");
-                Integer x = (int) (Math.random() * 3);
-                Integer y = (int) (Math.random() * 3);
+                System.out.println("Гость делает ход");
+                System.out.println("Ввод координат x, y:");
+                int x = in_num.nextInt();
+                int y = in_num.nextInt();
 
-                // check if x, y are valid ...
-                consoleClient.placeSymbol(sessionId, botId, x, y);
-                // wait for 2 seconds ...
-                coin = 1;
+                gameInfo = consoleClient.placeSymbol(sessionId, guestId, x, y);
             }
 
-            filledCells++;
+            consoleClient.showField(sessionId);
+            System.out.println("\nПродолжить игру? Да/Нет");
+            String answ = in.nextLine();
+            if (Objects.equals(answ, new String("Нет"))) {
+                break;
+            }
+
+            clearScreen();
         }
 
+        in.close();
+        in_num.close();
         System.out.println("Игра окончена!");
-        connection.disconnect();
     }
 }
