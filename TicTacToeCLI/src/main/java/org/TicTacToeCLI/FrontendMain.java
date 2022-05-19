@@ -69,18 +69,23 @@ public class FrontendMain {
         }
         System.out.println("role:"+role+"\nsessionId:"+sessionId+"\nuserId:"+userId);
         String sessionInfo = consoleClient.getSessionInfo(sessionId);
-        do  {
+        while (true){
+            sessionInfo = consoleClient.getSessionInfo(sessionId);
             System.out.println(JsonParser.parseJSON(sessionInfo).get("field"));
+            if (!JsonParser.parseJSON(sessionInfo).get("result").equals(JsonParser.ResultValues.NOT_FINISHED.name())) {
+                System.out.println(JsonParser.parseJSON(sessionInfo).get("result"));
+                break;
+            }
             if ((
-                    role.equals("create") && (boolean)JsonParser.parseJSON(sessionInfo).get("isHostTurn")
+                    role.equals("create") && (boolean) JsonParser.parseJSON(sessionInfo).get("isHostTurn")
             ) || (
-                    role.equals("connect") && !(boolean)JsonParser.parseJSON(sessionInfo).get("isHostTurn")
+                    role.equals("connect") && !(boolean) JsonParser.parseJSON(sessionInfo).get("isHostTurn")
             )) {
                 int width = in.nextInt();
                 int height = in.nextInt();
-                consoleClient.placeSymbol(sessionId, userId, width,height);
+                consoleClient.placeSymbol(sessionId, userId, width, height);
             }
             Thread.sleep(500);
-        } while (JsonParser.getSessionResult(sessionInfo).equals(JsonParser.ResultValues.NOT_FINISHED.name()));
+        }
     }
 }
