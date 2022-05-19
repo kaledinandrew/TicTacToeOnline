@@ -1,12 +1,10 @@
 package com.TicTacToeBackend.controller;
 
-import com.TicTacToeBackend.dto.*;
 import com.TicTacToeBackend.model.User;
 import com.TicTacToeBackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,11 +29,12 @@ public class UserController {
     }
 
     @PostMapping("")
-    public User createUser(@Valid @RequestBody UserDto dto) {
-        if (dto == null || dto.getName() == null || dto.getSymbol() == null || dto.getName().isEmpty()) {
+    public User createUser(@RequestParam(value = "name") String name,
+                           @RequestParam(value = "symbol") long symbol) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Request body is not valid");
         }
-        return userRepository.save(dto.toUser());
+        return userRepository.save(new User(name, symbol));
     }
 
 }

@@ -6,10 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "sessions")
@@ -24,14 +22,6 @@ public class Session {
     @Column(name = "session_id")
     private Long sessionId;
 
-//    @ManyToOne // owner
-//    @JoinColumn(name = "host_id", nullable = false)
-//    private User host;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "guest_id")
-//    private User guest;
-
     @Column(name = "host_id")
     private Long hostId;
 
@@ -44,6 +34,10 @@ public class Session {
 
     @Column(name = "isHostTurn")
     private Boolean isHostTurn;
+
+    // Possible values: NOT_FINISHED, HOST_WIN, GUEST_WIN, DRAW
+    @Column(name = "result")
+    private String result;
 
     public List<List<Long>> getField() {
         List<List<Long>> matrix = Arrays.stream(field.split(";"))

@@ -14,6 +14,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SessionController {
 
+    private enum ResultValues {
+        NOT_FINISHED,
+        HOST_WIN,
+        GUEST_WIN,
+        DRAW
+    }
+
     private final SessionRepository sessionRepository;
     private final UserRepository userRepository;
 
@@ -102,7 +109,12 @@ public class SessionController {
 //        field.get(x).set(y, symbol);
         session.setField(updatedField);
         session.setIsHostTurn(!session.getIsHostTurn());
+        session.setResult(updateResultOfSession(session));
         return sessionRepository.save(session);
+    }
+
+    private String updateResultOfSession(Session session) {
+        return ResultValues.NOT_FINISHED.name();
     }
 
 }

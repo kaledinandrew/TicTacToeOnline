@@ -17,4 +17,7 @@ public class SessionDto {
     // That means we have a matrix 3x3
     private String field;
 
+    // Possible values: NOT_FINISHED, HOST_WIN, GUEST_WIN, DRAW
+    private String result;
+
 }
