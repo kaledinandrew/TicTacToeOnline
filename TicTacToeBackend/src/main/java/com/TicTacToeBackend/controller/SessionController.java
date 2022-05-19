@@ -3,6 +3,7 @@ package com.TicTacToeBackend.controller;
 import com.TicTacToeBackend.model.Session;
 import com.TicTacToeBackend.model.User;
 import com.TicTacToeBackend.repository.*;
+import com.TicTacToeBackend.service.UpdateResultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,15 +15,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SessionController {
 
-    private enum ResultValues {
-        NOT_FINISHED,
-        HOST_WIN,
-        GUEST_WIN,
-        DRAW
-    }
-
     private final SessionRepository sessionRepository;
     private final UserRepository userRepository;
+    private final UpdateResultService updateResultService;
 
     @GetMapping("/all-sessions-ids")
     public List<Long> getAllSessions() {
@@ -46,7 +41,6 @@ public class SessionController {
         }
 
         Session session = new Session();
-//        session.setHost(userRepository.getById(hostId));
         session.setHostId(hostId);
         session.setField("0,0,0;0,0,0;0,0,0");
         session.setIsHostTurn(true);
@@ -65,7 +59,6 @@ public class SessionController {
             throw new IllegalArgumentException("User with userId = " + guestId + " not found");
         }
 
-//        session.setGuest(userRepository.findFirstByUserId(guestId));
         session.setGuestId(guestId);
         return sessionRepository.save(session);
     }
@@ -84,8 +77,8 @@ public class SessionController {
         if (session == null) {
             throw new IllegalArgumentException("Session with sessionId = " + sessionId + " not found");
         }
-        // TODO: configure when not 3x3 matrix is supported
-        if (x < 0 || x > 2 || y < 0 || y > 2) {
+
+        if (x < 0 || x > session.getField().size() || y < 0 || y > session.getField().get(0).size()) {
             throw new IllegalArgumentException("Cell (x = " + x + "; y = " + y + ") is invalid");
         }
 
@@ -106,15 +99,10 @@ public class SessionController {
             }
             updatedField.add(tmp);
         }
-//        field.get(x).set(y, symbol);
         session.setField(updatedField);
+        session.setResult(updateResultService.getCurrentResult(session, x, y));
         session.setIsHostTurn(!session.getIsHostTurn());
-        session.setResult(updateResultOfSession(session));
         return sessionRepository.save(session);
-    }
-
-    private String updateResultOfSession(Session session) {
-        return ResultValues.NOT_FINISHED.name();
     }
 
 }
