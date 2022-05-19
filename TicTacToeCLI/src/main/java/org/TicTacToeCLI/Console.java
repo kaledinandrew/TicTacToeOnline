@@ -52,7 +52,7 @@ public class Console implements SessionObserver {
     }
 
     @Override // OK
-    public String postUpdate (HttpURLConnection connection, String jsonInputString) {
+    public String postUpdate (HttpURLConnection connection) {
 
         try {
             connection.setRequestMethod("POST");
@@ -67,15 +67,6 @@ public class Console implements SessionObserver {
         connection.setDoOutput(true);
         connection.setConnectTimeout(CONNECTION_TIMEOUT);
         connection.setReadTimeout(READ_TIMEOUT);
-
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes("UTF-8");
-            os.write(input, 0, input.length);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Не удалось записать JSON");
-            System.exit(1);
-        }
 
         int code = 0;
         try {
@@ -175,12 +166,10 @@ public class Console implements SessionObserver {
     // POST -- OK
     public String startSession (int hostId) {
         Map<String, Object> parameters  = new HashMap<>();
-        parameters.put("hostId", hostId);
-        String jsonInputString = JsonParser.MapToString(parameters);
 
         HttpURLConnection connection = Connection.connect(SESSIONS_LINK + "?hostId=" + String.valueOf(hostId));
         if (Objects.nonNull(connection)) {
-            return this.postUpdate(connection, jsonInputString);
+            return this.postUpdate(connection);
         } else {
             System.out.println("Не удалось создать сессию");
             return "";
@@ -316,7 +305,7 @@ public class Console implements SessionObserver {
 //        return result;
 //    }
 
-   // public void updateField() throws Exception {} // ???
+    // public void updateField() throws Exception {} // ???
 
     public String getSessionInfo(int sessionId) {
         URL url = null;

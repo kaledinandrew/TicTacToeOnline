@@ -11,8 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class UserClient implements SessionObserver {
@@ -55,7 +53,7 @@ public class UserClient implements SessionObserver {
     }
 
     @Override // OK
-    public String postUpdate(HttpURLConnection connection, String jsonInputString) {
+    public String postUpdate(HttpURLConnection connection) {
 
         try {
             connection.setRequestMethod("POST");
@@ -70,16 +68,6 @@ public class UserClient implements SessionObserver {
         connection.setDoOutput(true);
         connection.setConnectTimeout(CONNECTION_TIMEOUT);
         connection.setReadTimeout(READ_TIMEOUT);
-
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes("UTF-8");
-            os.write(input, 0, input.length);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Не удалось записать JSON");
-            System.exit(1);
-        }
-
 
         String answ = "";
         try (
@@ -178,15 +166,10 @@ public class UserClient implements SessionObserver {
 
     // POST -- OK
     public String createUser(String name, int symbol) {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", name);
-        parameters.put("symbol", symbol);
-        String jsonInputString = JsonParser.MapToString(parameters);
-
-        HttpURLConnection connection = connect(USERS_LINK);
+        HttpURLConnection connection = connect(USERS_LINK+"?name="+name+"&symbol="+symbol);
 
         if (Objects.nonNull(connection)) {
-            return this.postUpdate(connection, jsonInputString);
+            return this.postUpdate(connection);
         } else {
             System.out.println("Не удалось создать пользователя");
             return "";

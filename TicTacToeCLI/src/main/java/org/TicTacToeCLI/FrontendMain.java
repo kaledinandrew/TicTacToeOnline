@@ -20,12 +20,10 @@ public class FrontendMain {
         }
         System.out.print("name: ");
         Scanner in = new Scanner(System.in);
-//        String name = in.nextLine();
-        String name = "maxim";
-        in.close();
+        String name = in.nextLine();
         String role = args[0];
         int symbol;
-        int sessionId;
+        int sessionId = 0;
         int userId;
         UserClient userClient = new UserClient();
         Console consoleClient = new Console();
@@ -49,16 +47,18 @@ public class FrontendMain {
             case "connect" -> {
                 symbol = 'o';
 
-                String createsUser = userClient.createUser(name, symbol);
-                if (createsUser.isEmpty()) {
+                String createdUser = userClient.createUser(name, symbol);
+                if (createdUser.isEmpty()) {
                     throw new Exception("Не удалось создать пользователя!");
                 }
-                userId = JsonParser.getUserId(createsUser);
+                System.out.println(createdUser);
+                userId = JsonParser.getUserId(createdUser);
 
                 System.out.print("session id: ");
                 in = new Scanner(System.in);
-                sessionId = in.nextInt();
-                in.close();
+                if (in.hasNextLine()) {
+                    sessionId = Integer.parseInt(in.nextLine());
+                }
                 var createdSession = consoleClient.connectToSession(sessionId, userId);
                 if (createdSession.isEmpty()) {
                     throw new Exception("Не удалось подключиться к сессии!");
