@@ -68,7 +68,19 @@ public class FrontendMain {
             default -> throw new Exception("ИДИ УЧИ УРОКИ\nargument required: create|connect");
         }
         System.out.println("role:"+role+"\nsessionId:"+sessionId+"\nuserId:"+userId);
-        while(true) {
-        }
+        String sessionInfo = consoleClient.getSessionInfo(sessionId);
+        do  {
+            System.out.println(JsonParser.parseJSON(sessionInfo).get("field"));
+            if ((
+                    role.equals("create") && (boolean)JsonParser.parseJSON(sessionInfo).get("isHostTurn")
+            ) || (
+                    role.equals("connect") && !(boolean)JsonParser.parseJSON(sessionInfo).get("isHostTurn")
+            )) {
+                int width = in.nextInt();
+                int height = in.nextInt();
+                consoleClient.placeSymbol(sessionId, userId, width,height);
+            }
+            Thread.sleep(500);
+        } while (JsonParser.getSessionResult(sessionInfo).equals(JsonParser.ResultValues.NOT_FINISHED.name()));
     }
 }
