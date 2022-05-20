@@ -12,6 +12,13 @@ import java.util.HashMap;
 
 public class JsonParser {
 
+    public static enum ResultValues {
+        NOT_FINISHED,
+        HOST_WIN,
+        GUEST_WIN,
+        DRAW
+    }
+
     public static Map<String, Object> parseJSON(String jsonString) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> map = null;
@@ -68,9 +75,27 @@ public class JsonParser {
         return matrix;
     }
 
+//    public static ArrayList<ArrayList<Integer>> parseFieldToTable(String stringList) {
+//        int[][] matrix = new int[][];
+//
+//        for (String l: stringList.split("\\]\\s*,\\s*\\[")) {
+//            l = l.replaceAll("\\[", "").replaceAll("\\]", "").toString();
+//            matrix.add(new ArrayList<Integer>());
+//            for (String s : l.split(", ")) {
+//                matrix.get(matrix.size() - 1).add(Integer.valueOf(s));
+//            }
+//        }
+//
+//        return matrix;
+//    }
+
     public static int getSessionId(String jsonString) {
         Map<String, Object> map = parseJSON(jsonString);
         return (int) map.get("sessionId");
+    }
+    public static String getSessionResult(String jsonString) {
+        Map<String, Object> map = parseJSON(jsonString);
+        return (String) map.get("result");
     }
     public static int getHostId(String jsonString) {
         Map<String, Object> map = parseJSON(jsonString);

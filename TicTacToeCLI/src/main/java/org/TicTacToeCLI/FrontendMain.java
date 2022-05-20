@@ -2,16 +2,10 @@ package org.TicTacToeCLI;
 
 import org.TicTacToeCLI.*;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URLEncoder;
-import java.util.*;
-
-import static org.TicTacToeCLI.Connection.connect;
-import static org.TicTacToeCLI.Variables.*;
-
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Scanner;
 
 
 public class FrontendMain {
@@ -21,86 +15,81 @@ public class FrontendMain {
     }
 
     public static void main(String[] args) throws Exception {
-
+        if (args.length < 1) {
+            throw new Exception("argument required: create|connect");
+        }
+        System.out.print("name: ");
+        Scanner in = new Scanner(System.in);
+        String name = in.nextLine();
+        String role = args[0];
+        int symbol;
+        int sessionId = 0;
+        int userId;
         UserClient userClient = new UserClient();
         Console consoleClient = new Console();
-        int hostId;
-        int guestId;
-        int sessionId;
+        switch (role) {
+            case "create" -> {
+                symbol = 'x';
 
-//        Эти пользователи и сессия уже существуют
-//        hostId = 13;
-//        guestId = 16;
-//        System.out.println(userClient.getUserInfo(hostId));
-//        System.out.println(userClient.getUserInfo(guestId));
-//        sessionId = 9;
+                String createdUser = userClient.createUser(name, symbol);
+                if (createdUser.isEmpty()) {
+                    throw new Exception("Не удалось создать пользователя!");
+                }
+                userId = JsonParser.getUserId(createdUser);
 
-//       Можно создать новые
-        Scanner in = new Scanner(System.in);
-        Scanner in_num = new Scanner(System.in);
-        String name = "";
-        int symbol = 0;
-        String sessionInfo = "";
-
-        System.out.println("Ввод имени и символа первого игрока (хоста):");
-        name = in.nextLine();
-        symbol = in_num.nextInt();
-        hostId = JsonParser.getUserId(userClient.createUser(name, symbol));
-
-        System.out.println("Ввод имени и символа второго игрока (гостя):");
-        name = in.nextLine();
-        symbol = in_num.nextInt();
-        guestId = JsonParser.getUserId(userClient.createUser(name, symbol));
-
-        System.out.println(userClient.getUserInfo(hostId));
-        System.out.println(userClient.getUserInfo(guestId));
-
-        // Хост создает сессию
-        sessionInfo = consoleClient.startSession(hostId);
-        System.out.println(sessionInfo);
-        sessionId = JsonParser.getSessionId(sessionInfo);
-
-
-        System.out.printf("SessionId = %d\n", sessionId);
-
-        // Гость подключается к сессии
-        String sessionConnectInfo = consoleClient.connectToSession(sessionId, guestId);
-        // System.out.println(sessionConnectInfo);
-
-        System.out.println("Start the game!\n");
-        for (int i = 0; i < 9; i++) {
-            String sessionInfoGame = consoleClient.getSessionInfo(sessionId);
-            Boolean turn = JsonParser.getTurn(sessionInfoGame);
-
-            String gameInfo = "";
-            if (turn) {
-                System.out.println("Хост делает ход");
-                System.out.println("Ввод координат x, y:");
-                int x = in_num.nextInt();
-                int y = in_num.nextInt();
-
-                gameInfo = consoleClient.placeSymbol(sessionId, hostId, x, y);
-            } else {
-                System.out.println("Гость делает ход");
-                System.out.println("Ввод координат x, y:");
-                int x = in_num.nextInt();
-                int y = in_num.nextInt();
-
-                gameInfo = consoleClient.placeSymbol(sessionId, guestId, x, y);
+                String startedSession = consoleClient.startSession(userId);
+                if (startedSession.isEmpty()) {
+                    throw new Exception("Не удалось создать сессию!");
+                }
+                sessionId = JsonParser.getSessionId(startedSession);
+                System.out.println("sessionId: " + sessionId);
             }
+            case "connect" -> {
+                symbol = 'o';
 
-            consoleClient.showField(sessionId);
-            System.out.println("\nПродолжить игру? Да/Нет");
-            String answ = in.nextLine();
-            if (Objects.equals(answ, new String("Нет"))) {
+                String createdUser = userClient.createUser(name, symbol);
+                if (createdUser.isEmpty()) {
+                    throw new Exception("Не удалось создать пользователя!");
+                }
+                System.out.println(createdUser);
+                userId = JsonParser.getUserId(createdUser);
+
+                System.out.print("session id: ");
+                in = new Scanner(System.in);
+                if (in.hasNextLine()) {
+                    sessionId = Integer.parseInt(in.nextLine());
+                }
+                var createdSession = consoleClient.connectToSession(sessionId, userId);
+                if (createdSession.isEmpty()) {
+                    throw new Exception("Не удалось подключиться к сессии!");
+                }
+                System.out.println(createdSession);
+            }
+            default -> throw new Exception("ИДИ УЧИ УРОКИ\nargument required: create|connect");
+        }
+        System.out.println("role:"+role+"\nsessionId:"+sessionId+"\nuserId:"+userId);
+        while (true){
+            String sessionInfo = consoleClient.getSessionInfo(sessionId);
+            System.out.println(
+                    GameField.toString_(
+                            (ArrayList<ArrayList<Integer>>) JsonParser.parseJSON(sessionInfo).get("field")
+                    )
+            );
+            System.out.flush();
+            if (!JsonParser.parseJSON(sessionInfo).get("result").equals(JsonParser.ResultValues.NOT_FINISHED.name())) {
+                System.out.println(JsonParser.parseJSON(sessionInfo).get("result"));
                 break;
             }
-
-            clearScreen();
+            if ((
+                    role.equals("create") && (boolean) JsonParser.parseJSON(sessionInfo).get("isHostTurn")
+            ) || (
+                    role.equals("connect") && !(boolean) JsonParser.parseJSON(sessionInfo).get("isHostTurn")
+            )) {
+                int width = in.nextInt();
+                int height = in.nextInt();
+                consoleClient.placeSymbol(sessionId, userId, width, height);
+            }
+            Thread.sleep(500);
         }
-
-        in.close();
-        in_num.close();
-        System.out.println("Игра окончена!");
     }
 }

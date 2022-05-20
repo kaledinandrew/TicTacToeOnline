@@ -20,6 +20,8 @@ public class Connection {
         }
 
         try {
+//            var yobaniyconnection = (HttpURLConnection) url.openConnection();
+//            yobaniyconnection.connect();
             connection = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
             System.out.println("Не удалось поключиться к серверу");
