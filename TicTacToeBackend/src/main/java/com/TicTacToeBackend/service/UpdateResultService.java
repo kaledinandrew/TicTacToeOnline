@@ -1,6 +1,5 @@
 package com.TicTacToeBackend.service;
 
-import com.TicTacToeBackend.model.Session;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,15 +27,6 @@ public class UpdateResultService {
         for (int j = 0; j < m; j++) {
             if (field.get(x).get(j) == newSymbol) horizontal++;
         }
-//        if (n > m && x >= y && x + y < m) {
-//            for (int i = 0; i < m; i++) {
-//                if (field.get(x - y + i).get(i) == newSymbol) mainDiagonal++;
-//            }
-//        } else if (n <= m && y >= x && x + y < n) {
-//            for (int i = 0; i < n; i++) {
-//                if (field.get(i).get(y - x + i) == newSymbol) subDiagonal++;
-//            }
-//        }
 
         boolean isWin = (vertical == n || horizontal == m || mainDiagonal == min(n, m) || subDiagonal == min(n, m));
 
