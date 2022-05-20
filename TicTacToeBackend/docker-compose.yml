@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  app:
+    image: 'application:latest'
+    build:
+      context: .
+    container_name: app
+    ports:
+      - 9898:9898
