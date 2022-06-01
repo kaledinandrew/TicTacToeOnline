@@ -40,9 +40,12 @@ public class Console extends SessionObserver {
         }
     }
 
-    public String placeSymbol(int sessionId, int userId, int x, int y) throws IOException {
-        // check if x, y are valid
-        if (x < 0 || y < 0) { throw new IOException("Невалидные x, y"); }
+    public int placeSymbol(int sessionId, int userId, int x, int y) throws IOException {
+        // FIXME
+        if (x < 0 || y < 0) {
+            System.out.print("Невалидные x, y");
+            return -1;
+        }
 
         Map<String, Object> parameters  = new HashMap<>();
         parameters.put("sessionId", sessionId);
@@ -56,10 +59,12 @@ public class Console extends SessionObserver {
                 "&x=" + String.valueOf(x) + "&y=" + String.valueOf(y));
 
         if (Objects.nonNull(connection)) {
-            return this.putUpdate(connection, jsonInputString);
+            // return this.putUpdate(connection, jsonInputString);
+            return 1;
         } else {
             System.out.println("Не удалось поставить символ");
-            return "";
+            // return "";
+            return -1;
         }
     }
 
