@@ -46,6 +46,7 @@ public class GameField {
 			}
 			res.append('\n');
 		}
+
 		return res.toString();
 	}
 

@@ -9,11 +9,6 @@ import java.util.Scanner;
 
 
 public class FrontendMain {
-    public static void clearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
-
     public static void main(String[] args) throws Exception {
         if (args.length < 1) {
             throw new Exception("argument required: create|connect");
@@ -35,15 +30,18 @@ public class FrontendMain {
                 if (createdUser.isEmpty()) {
                     throw new Exception("Не удалось создать пользователя!");
                 }
+
                 userId = JsonParser.getUserId(createdUser);
 
                 String startedSession = consoleClient.startSession(userId);
                 if (startedSession.isEmpty()) {
                     throw new Exception("Не удалось создать сессию!");
                 }
+
                 sessionId = JsonParser.getSessionId(startedSession);
                 System.out.println("sessionId: " + sessionId);
             }
+
             case "connect" -> {
                 symbol = 'o';
 
@@ -51,6 +49,7 @@ public class FrontendMain {
                 if (createdUser.isEmpty()) {
                     throw new Exception("Не удалось создать пользователя!");
                 }
+
                 System.out.println(createdUser);
                 userId = JsonParser.getUserId(createdUser);
 
@@ -59,27 +58,34 @@ public class FrontendMain {
                 if (in.hasNextLine()) {
                     sessionId = Integer.parseInt(in.nextLine());
                 }
+
                 var createdSession = consoleClient.connectToSession(sessionId, userId);
                 if (createdSession.isEmpty()) {
                     throw new Exception("Не удалось подключиться к сессии!");
                 }
+
                 System.out.println(createdSession);
             }
-            default -> throw new Exception("ИДИ УЧИ УРОКИ\nargument required: create|connect");
+
+            default -> throw new Exception("ИДИ УЧИ УРОКИ ЧОРТ\nargument required: create|connect");
         }
-        System.out.println("role:"+role+"\nsessionId:"+sessionId+"\nuserId:"+userId);
-        while (true){
+
+        System.out.println("role:" + role + "\nsessionId:" + sessionId + "\nuserId:" + userId);
+        while (true) {
             String sessionInfo = consoleClient.getSessionInfo(sessionId);
             System.out.println(
                     GameField.toString_(
-                            (ArrayList<ArrayList<Integer>>) JsonParser.parseJSON(sessionInfo).get("field")
+                            // (ArrayList<ArrayList<Integer>>) JsonParser.parseJSON(sessionInfo).get("field")
+                            JsonParser.getFieldArray(sessionInfo)
                     )
             );
+
             System.out.flush();
             if (!JsonParser.parseJSON(sessionInfo).get("result").equals(JsonParser.ResultValues.NOT_FINISHED.name())) {
                 System.out.println(JsonParser.parseJSON(sessionInfo).get("result"));
                 break;
             }
+
             if ((
                     role.equals("create") && (boolean) JsonParser.parseJSON(sessionInfo).get("isHostTurn")
             ) || (
@@ -89,6 +95,7 @@ public class FrontendMain {
                 int height = in.nextInt();
                 consoleClient.placeSymbol(sessionId, userId, width, height);
             }
+
             Thread.sleep(500);
         }
     }

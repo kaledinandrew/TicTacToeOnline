@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class JsonParser {
     public static Map<String, Object> parseJSON(String jsonString) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> map = null;
+
         try {
             map = objectMapper.readValue(jsonString, new TypeReference<HashMap<String,Object>>(){});
         } catch (JsonProcessingException e) {
@@ -29,6 +31,7 @@ public class JsonParser {
             System.out.println("Не удалось прочитать JSON");
             System.exit(1);
         }
+
         return map;
     }
 
@@ -44,17 +47,18 @@ public class JsonParser {
             // and append the values from the map to form a single parameter
             try {
                 requestData.append("\"");
-                requestData.append(URLEncoder.encode((String) param.getKey(), "UTF-8"));
+                requestData.append(URLEncoder.encode((String) param.getKey(), StandardCharsets.UTF_8));
                 requestData.append("\"");
                 requestData.append(": ");
                 requestData.append("\"");
-                requestData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+                requestData.append(URLEncoder.encode(String.valueOf(param.getValue()), StandardCharsets.UTF_8));
                 requestData.append("\"");
-            } catch (UnsupportedEncodingException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Encoding error (parser)");
                 System.exit(1);
             }
+
         }
         requestData.append("}");
 
@@ -62,10 +66,10 @@ public class JsonParser {
     }
 
     public static ArrayList<ArrayList<Integer>> parseField(String stringList) {
-        ArrayList<ArrayList<Integer>> matrix = new ArrayList<ArrayList<Integer>>();
+        ArrayList<ArrayList<Integer>> matrix = new ArrayList<>();
 
         for (String l: stringList.split("\\]\\s*,\\s*\\[")) {
-            l = l.replaceAll("\\[", "").replaceAll("\\]", "").toString();
+            l = l.replaceAll("\\[", "").replaceAll("\\]", "");
             matrix.add(new ArrayList<Integer>());
             for (String s : l.split(", ")) {
                 matrix.get(matrix.size() - 1).add(Integer.valueOf(s));
@@ -124,6 +128,11 @@ public class JsonParser {
     public static String getField(String jsonString) {
         Map<String, Object> map = parseJSON(jsonString);
         return (String) map.get("field");
+    }
+
+    public static ArrayList<ArrayList<Integer>> getFieldArray(String jsonString) {
+        Map<String, Object> map = parseJSON(jsonString);
+        return (ArrayList<ArrayList<Integer>>) map.get("field");
     }
 }
 
