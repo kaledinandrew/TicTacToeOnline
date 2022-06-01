@@ -1,6 +1,6 @@
 package org.TicTacToeCLI;
 
-import static org.TicTacToeCLI.Variables.*;
+import static org.TicTacToeCLI.ServiceUrls.*;
 import static org.TicTacToeCLI.Connection.*;
 
 import java.io.BufferedReader;

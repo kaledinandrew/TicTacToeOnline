@@ -114,5 +114,6 @@ public class FrontendMain {
         }
 
         System.out.print("Хорошего дня!");
+        in.close();
     }
 }

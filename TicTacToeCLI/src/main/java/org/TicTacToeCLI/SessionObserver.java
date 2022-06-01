@@ -8,8 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.nio.charset.StandardCharsets;
 
-import static org.TicTacToeCLI.Variables.CONNECTION_TIMEOUT;
-import static org.TicTacToeCLI.Variables.READ_TIMEOUT;
+import static org.TicTacToeCLI.ServiceUrls.*;
 
 public class SessionObserver {
     public String getUpdate(HttpURLConnection connection) {
