@@ -15,6 +15,7 @@ public class FrontendMain {
         int symbol;
         int sessionId = 0;
         int userId;
+        boolean isHost = false;
         UserClient userClient = new UserClient();
         Console consoleClient = new Console();
 
@@ -24,7 +25,7 @@ public class FrontendMain {
             switch (role) {
                 case "create" -> {
                     symbol = 'x';
-
+                    isHost = true;
                     String createdUser = userClient.createUser(name, symbol);
                     if (createdUser.isEmpty()) {
                         throw new Exception("Не удалось создать пользователя!");
@@ -43,7 +44,7 @@ public class FrontendMain {
 
                 case "connect" -> {
                     symbol = 'o';
-
+                    isHost = false;
                     String createdUser = userClient.createUser(name, symbol);
                     if (createdUser.isEmpty()) {
                         throw new Exception("Не удалось создать пользователя!");
@@ -81,8 +82,14 @@ public class FrontendMain {
 
                 System.out.flush();
                 if (!JsonParser.parseJSON(sessionInfo).get("result").equals(JsonParser.ResultValues.NOT_FINISHED.name())) {
-                    var result = JsonParser.parseJSON(sessionInfo).get("result");
-                    System.out.println(result);
+                    var result = (JsonParser.ResultValues) JsonParser.parseJSON(sessionInfo).get("result");
+                    String message = "Ты проиграл";
+                    if ((result.equals(JsonParser.ResultValues.HOST_WIN) && isHost) || (result.equals(JsonParser.ResultValues.GUEST_WIN) && !isHost)) {
+                        message = "Ты выиграл!!!";
+                    } else if (result.equals(JsonParser.ResultValues.DRAW)) {
+                        message = "Ничья";
+                    }
+                    System.out.println(message);
                     break;
                 }
 

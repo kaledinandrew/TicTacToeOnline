@@ -41,12 +41,6 @@ public class Console extends SessionObserver {
     }
 
     public int placeSymbol(int sessionId, int userId, int x, int y) throws IOException {
-        // FIXME
-        if (x < 0 || y < 0) {
-            System.out.print("Невалидные x, y");
-            return -1;
-        }
-
         Map<String, Object> parameters  = new HashMap<>();
         parameters.put("sessionId", sessionId);
         parameters.put("userId", userId);
