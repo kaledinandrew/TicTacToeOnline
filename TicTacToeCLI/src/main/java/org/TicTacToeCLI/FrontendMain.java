@@ -4,18 +4,27 @@ import java.util.Scanner;
 
 public class FrontendMain {
     public static void main(String[] args) throws Exception {
+
+        Scanner in = new Scanner(System.in);
+        String role;
+
         if (args.length < 1) {
-            throw new Exception("argument required: create|connect");
+            System.out.print("Создать сессию или присоединиться?\nВведите create или connect: ");
+            role = in.nextLine();
+            while (!role.equals("create") & !role.equals("connect")) {
+                System.out.print("Введен неверный аргумент\nПопробуйте еще раз: ");
+                role = in.nextLine();
+            }
+        } else {
+            role = args[0];
         }
 
-        System.out.print("name: ");
-        Scanner in = new Scanner(System.in);
+        System.out.print("Ваше имя: ");
         String name = in.nextLine();
-        String role = args[0];
         int symbol;
         int sessionId = 0;
         int userId;
-        boolean isHost = false;
+        boolean isHost;
         UserClient userClient = new UserClient();
         Console consoleClient = new Console();
 
@@ -83,11 +92,11 @@ public class FrontendMain {
                 System.out.flush();
                 if (!JsonParser.parseJSON(sessionInfo).get("result").equals(JsonParser.ResultValues.NOT_FINISHED.name())) {
                     var result = (JsonParser.ResultValues) JsonParser.parseJSON(sessionInfo).get("result");
-                    String message = "Ты проиграл";
+                    String message = "Ты проиграл... Рофлан поминки. Не затащил.";
                     if ((result.equals(JsonParser.ResultValues.HOST_WIN) && isHost) || (result.equals(JsonParser.ResultValues.GUEST_WIN) && !isHost)) {
-                        message = "Ты выиграл!!!";
+                        message = "Ты выиграл!!! Команда TicTacToeOnline гордится тобой!";
                     } else if (result.equals(JsonParser.ResultValues.DRAW)) {
-                        message = "Ничья";
+                        message = "Ничья. Играем до трех.";
                     }
                     System.out.println(message);
                     break;
@@ -98,15 +107,20 @@ public class FrontendMain {
                 ) || (
                         role.equals("connect") && !(boolean) JsonParser.parseJSON(sessionInfo).get("isHostTurn")
                 )) {
+                    System.out.print("Введите координаты x, y: ");
                     int width = in.nextInt();
                     int height = in.nextInt();
-                    var ok = consoleClient.placeSymbol(sessionId, userId, width, height);
+                    while (consoleClient.placeSymbol(sessionId, userId, width, height) < 0) {
+                        System.out.print("Введены неверные координаты!\nПопробуйте еще раз: ");
+                        width = in.nextInt();
+                        height = in.nextInt();
+                    }
                 }
 
                 Thread.sleep(500);
             }
 
-            System.out.print("Хотите сыграть снова? (1|0)");
+            System.out.print("Хотите сыграть снова?\nВведите 1, если да и 0 иначе: ");
             int replay = in.nextInt();
             if (replay != 1) {
                 break replaygameloop;
