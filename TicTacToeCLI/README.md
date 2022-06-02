@@ -1,25 +1,22 @@
-# Frontend часть проекта
-## Что сделано и как?
-13/04: реализован основной логический шаблон класса `Console`, а именно методы `GET`, `POST` через интерфейс `SessionObserver`; 
-методы вставки символа (примитив), отображения результата и игрового поля.
+# Frontend-часть проекта
+Упакована с помощью [GraalVM native-image](https://www.graalvm.org/22.1/reference-manual/native-image/).
 
-15/04: написан прототип функции `main`, разработаны (и переделаны) прототипов методов подключения к серверу и получения данных, а именно `startSession`, `connectToSession`, `placeSymbol`, `showField`, `createUser`, `connect`, написан JSON-парсер.
+## Сборка под Windows
+1. Установить виртуальную машину в точности как [здесь](https://www.graalvm.org/22.1/docs/getting-started/windows/);
+2. Установить необходимые дополнения: читать [здесь](https://stackoverflow.com/questions/64197329/cl-exe-missing-when-building-native-app-using-graalvm);
+3. Собираем jar-файл проекта:
+    1. В IntelliJ: `File` -> `Project Structure` -> `Artifacts`;
+    2. Во второй колонке `+` -> `JAR` -> `From module with dependencies`;
+    3. В поле `Main Class` выбираем `FrontendMain`;
+    4. **ОБЯЗАТЕЛЬНО**: в поле `Directory for META-INF/MANIFEST.MF` заменить `..\src\main\java` -> `..\src\main\resources`;
+    5. `Ok` -> `Apply` -> `Ok`;
+    6. В IntelliJ: `Build` -> `Build Artifacts` -> `TicTacToeCLI:jar` -> `Build`;
+    7. Если в папке `\TicTacToeCLI\out\artifacts\TicTacToeCLI_jar` появился файл `TicTacToeCLI.jar`, то все сделано верно.
+4. Упаковка в `native-image`. **Обязательно** через **Native Tools Command Prompt**:
+    1. Через `cd` переходим в папку `TicTacToeCLI_jar`;
+    2. Запускаем `native-image -jar TicTacToeCLI.jar`.
+    3. Ждем минут 5 и видим появление в папке `TicTacToeCLI_jar` исполняемого файла.
 
-28/04: практически полностью налажено взаимодействие с backend-частью, прописан отлов исключений, запросы работают стабильно, расширен класс парсера. Написана рабочая (почти) имитация игры.
-
-## Документация (если ее можно так назвать)
-[Тут](https://github.com/kaledinandrew/TicTacToeOnline/wiki/Frontend-Doc)
-
-## Актуальные планы
-* Перенос типа `SessionObserver` из интерфейса в класс, используемый статически
-* Разработка других методов, таких как `updateUser`, `deleteUser` и т.д.
-* Разбор способов подключения двух игроков с разных машин и передачи аргументов
-* Мелкие архитектурные и конструктивные правки
-
-## Источники информации
-* [Самая полезная статья про POST](https://javascopes.com/how-to-send-http-requests-in-java-301bb159/)
-* [Метод POST (видео)](https://www.youtube.com/watch?v=pc_jrANrjUc&list=PL81zTpL449O1KU5CCjGGqLXoxqZQj6pNr&index=11)
-* [Старые песни о главном. Java и исходящие запросы (статья)](https://habr.com/ru/company/umbrellaitcom/blog/423591/)
-* [Как отправить HTTP-запрос GET / POST в Java (статья)](https://russianblogs.com/article/35471062972/)
-* [Как отправлять HTTP-запросы на Java (статья)](https://javascopes.com/how-to-send-http-requests-in-java-301bb159/)
-* [Class URLConnection (основная документация)](https://docs.oracle.com/javase/8/docs/api/java/net/URLConnection.html#addRequestProperty-java.lang.String-java.lang.String-)
+Некоторые ссылки:
+* Ошибка [no main manifest attribute](https://qna.habr.com/q/614861);
+* [Она же](https://stackoverflow.com/questions/9689793/cant-execute-jar-file-no-main-manifest-attribute).
