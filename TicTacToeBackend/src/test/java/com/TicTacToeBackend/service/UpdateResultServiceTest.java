@@ -88,6 +88,23 @@ class UpdateResultServiceTest {
     }
 
     @Test
+    public void testWinNotSquare() {
+        // given
+        List<List<Long>> field = List.of(
+                List.of(1L, 0L, 1L),
+                List.of(0L, 0L, 1L),
+                List.of(0L, 0L, 1L),
+                List.of(0L, 0L, 1L)
+        );
+
+        // when
+        String result = updateResultService.getCurrentResult(field, true, 1, 2);
+
+        // then
+        assertEquals(ResultValues.HOST_WIN.name(), result);
+    }
+
+    @Test
     public void testDraw() {
         // given
         List<List<Long>> field = List.of(
