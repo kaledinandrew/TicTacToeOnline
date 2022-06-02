@@ -41,13 +41,13 @@ jobs:
     - name: Publish Test Report
       if: ${{ always() }}
       uses: scacap/action-surefire-report@v1
-  build-graalvm:
-    runs-on: ubuntu-latest
-    name: GraalVM Maven Test
-    steps:
-    - uses: actions/checkout@v3
-    - uses: DeLaGuardo/setup-graalvm
-      with:
-        graalvm-version: '19.3.0.java8'
-    - name: Build with Maven
-      run: mvn -q test -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+#  build-graalvm:
+#    runs-on: ubuntu-latest
+#    name: GraalVM Maven Test
+#    steps:
+#    - uses: actions/checkout@v3
+#    - uses: DeLaGuardo/setup-graalvm
+#      with:
+#        graalvm-version: '19.3.0.java8'
+#    - name: Build with Maven
+#      run: mvn -q test -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
