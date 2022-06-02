@@ -12,6 +12,7 @@ public class FrontendMain {
             System.out.print("Создать сессию или присоединиться?\nВведите create или connect: ");
             role = in.nextLine();
             while (!role.equals("create") & !role.equals("connect")) {
+                System.out.flush();
                 System.out.print("Введен неверный аргумент\nПопробуйте еще раз: ");
                 role = in.nextLine();
             }
