@@ -1,8 +1,26 @@
 package org.TicTacToeCLI;
 
+import java.util.Map;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class FrontendMain {
+
+    static class Config {
+        static ServiceUrls ReadConfig() throws FileNotFoundException {
+            String data = "";
+            File myObj = new File("config.json");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                data = myReader.nextLine();
+            }
+            myReader.close();
+            Map<String, Object> map = JsonParser.parseJSON(data);
+            String baseUrl = (String) map.get("baseUrl");
+            return new ServiceUrls(baseUrl);
+        }
+    }
     public static void main(String[] args) throws Exception {
 
         Scanner in = new Scanner(System.in);
@@ -19,16 +37,22 @@ public class FrontendMain {
         } else {
             role = args[0];
         }
+        ServiceUrls urls = new ServiceUrls("");
+        try {
+            urls = Config.ReadConfig();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         System.out.print("Ваше имя: ");
         String name = in.nextLine();
         int symbol;
         int sessionId = 0;
         int userId;
-        boolean isHost;
-        UserClient userClient = new UserClient();
-        Console consoleClient = new Console();
-
+        boolean isHost = false;
+        UserClient userClient = new UserClient(urls);
+        Console consoleClient = new Console(urls);
         replaygameloop:
         while (true) {
 

@@ -11,6 +11,11 @@ import java.nio.charset.StandardCharsets;
 import static org.TicTacToeCLI.ServiceUrls.*;
 
 public class SessionObserver {
+
+    protected final ServiceUrls urls;
+    public SessionObserver(ServiceUrls urls) {
+        this.urls = urls;
+    }
     public String getUpdate(HttpURLConnection connection) {
 
         try {
@@ -21,8 +26,8 @@ public class SessionObserver {
             System.exit(1);
         }
         connection.setRequestProperty("Content-Type", "application/json");
-        connection.setConnectTimeout(CONNECTION_TIMEOUT);
-        connection.setReadTimeout(CONNECTION_TIMEOUT);
+        connection.setConnectTimeout(urls.getConnectionTimeout());
+        connection.setReadTimeout(urls.getConnectionTimeout());
 
         InputStreamReader reader;
         try {
@@ -59,8 +64,8 @@ public class SessionObserver {
         connection.setRequestProperty("Content-Type", "application/json; utf-8");
         connection.setRequestProperty("Accept", "application/json");
         connection.setDoOutput(true);
-        connection.setConnectTimeout(CONNECTION_TIMEOUT);
-        connection.setReadTimeout(READ_TIMEOUT);
+        connection.setConnectTimeout(urls.getConnectionTimeout());
+        connection.setReadTimeout(urls.getReadTimeout());
 
         int code = 0;
         try {
@@ -108,8 +113,8 @@ public class SessionObserver {
         connection.setRequestProperty("Content-Type", "application/json; utf-8");
         connection.setRequestProperty("Accept", "application/json");
         connection.setDoOutput(true);
-        connection.setConnectTimeout(CONNECTION_TIMEOUT);
-        connection.setReadTimeout(READ_TIMEOUT);
+        connection.setConnectTimeout(urls.getConnectionTimeout());
+        connection.setReadTimeout(urls.getReadTimeout());
 
         try (OutputStream os = connection.getOutputStream()) {
             byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);

@@ -14,9 +14,12 @@ import java.net.URL;
 import java.util.Objects;
 
 public class UserClient extends SessionObserver {
+    public UserClient(ServiceUrls urls) {
+        super(urls);
+    }
 
     public String createUser(String name, int symbol) {
-        HttpURLConnection connection = connect(USERS_LINK+"?name="+name+"&symbol="+symbol);
+        HttpURLConnection connection = connect(super.urls.getUsersLink()+"?name="+name+"&symbol="+symbol);
 
         if (Objects.nonNull(connection)) {
             return this.postUpdate(connection);
@@ -29,7 +32,7 @@ public class UserClient extends SessionObserver {
     public String getUserInfo(int userId) {
         URL url = null;
         try {
-            url = new URL(USERS_LINK + "?userId=" + String.valueOf(userId));
+            url = new URL(urls.getUsersLink() + "?userId=" + String.valueOf(userId));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             System.out.println("Пользователь не найден");

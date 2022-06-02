@@ -1,11 +1,45 @@
 package org.TicTacToeCLI;
 
-public final class ServiceUrls {
-    public final static String SERVER_LINK = "http://localhost:9898";
-    public final static String USERS_LINK = "http://localhost:9898/users";
-    public final static String SESSIONS_LINK = "http://localhost:9898/sessions";
-    public final static String SESSIONS_CONNECT_LINK = "http://localhost:9898/sessions/connect";
-    public final static String PLACE_SYMBOL_LINK = "http://localhost:9898/sessions/place-symbol";
-    public final static int CONNECTION_TIMEOUT = 10000;
-    public final static int READ_TIMEOUT = 5000;
+public class ServiceUrls {
+    private final String baseUrl;
+    private final String usersLink;
+    private final String sessionsLink;
+    private final String sessionsConnectLink;
+    private final String placeSymbolLink;
+
+    public ServiceUrls(String baseUrl) {
+        this.baseUrl = baseUrl;
+        this.usersLink = baseUrl+"/users";
+        this.sessionsLink = baseUrl+"/sessions";
+        this.sessionsConnectLink = this.sessionsLink+"/connect";
+        this.placeSymbolLink = this.sessionsLink+"place-symbol";
+    }
+
+    public String getServerLink() {
+        return baseUrl;
+    }
+
+    public String getUsersLink() {
+        return usersLink;
+    }
+
+    public String getSessionsLink() {
+        return sessionsLink;
+    }
+
+    public String getSessionsConnectLink() {
+        return sessionsConnectLink;
+    }
+
+    public String getPlaceSymbolLink() {
+        return placeSymbolLink;
+    }
+
+    public int getConnectionTimeout() {
+        return 10000;
+    }
+
+    public int getReadTimeout() {
+        return 5000;
+    }
 }

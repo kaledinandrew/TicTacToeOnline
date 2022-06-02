@@ -12,9 +12,12 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class Console extends SessionObserver {
+    public Console(ServiceUrls urls) {
+        super(urls);
+    }
 
     public String startSession(int hostId) {
-        HttpURLConnection connection = Connection.connect(SESSIONS_LINK + "?hostId=" + String.valueOf(hostId));
+        HttpURLConnection connection = Connection.connect( super.urls.getSessionsLink()+ "?hostId=" + String.valueOf(hostId));
         if (Objects.nonNull(connection)) {
             return this.postUpdate(connection);
         } else {
@@ -29,7 +32,7 @@ public class Console extends SessionObserver {
         parameters.put("guestId", guestId);
         String jsonInputString = JsonParser.MapToString(parameters);
 
-        HttpURLConnection connection = Connection.connect(SESSIONS_CONNECT_LINK +
+        HttpURLConnection connection = Connection.connect(urls.getSessionsConnectLink() +
                 "/?sessionId=" + String.valueOf(sessionId) + "&guestId=" + String.valueOf(guestId));
 
         if (Objects.nonNull(connection)) {
@@ -48,7 +51,7 @@ public class Console extends SessionObserver {
         parameters.put("y", y);
         String jsonInputString = JsonParser.MapToString(parameters);
 
-        HttpURLConnection connection = Connection.connect(PLACE_SYMBOL_LINK +
+        HttpURLConnection connection = Connection.connect(urls.getPlaceSymbolLink() +
                 "/?sessionId=" + String.valueOf(sessionId) + "&userId=" + String.valueOf(userId) +
                 "&x=" + String.valueOf(x) + "&y=" + String.valueOf(y));
 
@@ -66,7 +69,7 @@ public class Console extends SessionObserver {
 
         URL url = null;
         try {
-            url = new URL(SESSIONS_LINK + "?sessionId=" + String.valueOf(sessionId));
+            url = new URL(urls.getSessionsLink() + "?sessionId=" + String.valueOf(sessionId));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             System.out.println("Сессия не найдена");
@@ -155,7 +158,7 @@ public class Console extends SessionObserver {
     public String getSessionInfo(int sessionId) {
         URL url = null;
         try {
-            url = new URL(SESSIONS_LINK + "?sessionId=" + String.valueOf(sessionId));
+            url = new URL(urls.getSessionsLink() + "?sessionId=" + String.valueOf(sessionId));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             System.out.println("Сессия не найден");
