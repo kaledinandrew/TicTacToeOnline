@@ -18,12 +18,15 @@ jobs:
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-        RELEASE_TIME: $(date +%s)
       run: 
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
-    - name: Test release time variable
-      run: echo $RELEASE_TIME; echo $(date +%s)
+        
+    - name: set release date
+      run: |
+        echo "RELEASE_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
+
     - name: Build Docker Image
       run: docker build . --file TicTacToeBackend/Dockerfile --tag $DOCKER_USER/tictactoebackend:$RELEASE_TIME
+      
     - name: Docker Push
       run: docker push $DOCKER_USER/tictactoebackend:$RELEASE_TIME
