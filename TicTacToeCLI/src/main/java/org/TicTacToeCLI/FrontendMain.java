@@ -116,11 +116,11 @@ public class FrontendMain {
 
                 System.out.flush();
                 if (!JsonParser.parseJSON(sessionInfo).get("result").equals(JsonParser.ResultValues.NOT_FINISHED.name())) {
-                    var result = (JsonParser.ResultValues) JsonParser.parseJSON(sessionInfo).get("result");
+                    var result = (String) JsonParser.parseJSON(sessionInfo).get("result");
                     String message = "Ты проиграл... Рофлан поминки. Не затащил.";
-                    if ((result.equals(JsonParser.ResultValues.HOST_WIN) && isHost) || (result.equals(JsonParser.ResultValues.GUEST_WIN) && !isHost)) {
+                    if ((result.equals(JsonParser.ResultValues.HOST_WIN.name()) && isHost) || (result.equals(JsonParser.ResultValues.GUEST_WIN.name()) && !isHost)) {
                         message = "Ты выиграл!!! Команда TicTacToeOnline гордится тобой!";
-                    } else if (result.equals(JsonParser.ResultValues.DRAW)) {
+                    } else if (result.equals(JsonParser.ResultValues.DRAW.name())) {
                         message = "Ничья. Играем до трех.";
                     }
                     System.out.println(message);

@@ -56,7 +56,7 @@ public class Console extends SessionObserver {
                 "&x=" + String.valueOf(x) + "&y=" + String.valueOf(y));
 
         if (Objects.nonNull(connection)) {
-            // return this.putUpdate(connection, jsonInputString);
+             this.putUpdate(connection, jsonInputString);
             return 1;
         } else {
             System.out.println("Не удалось поставить символ");
