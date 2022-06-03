@@ -22,14 +22,13 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
         
     - name: set release date
-      run: |
-        echo "RELEASE_TIME=$(date +%s)" >> ${GITHUB_ENV}
+      run: echo "RELEASE_TIME=$(date +%s)" >> ${GITHUB_ENV}
         
     - name: test variable
       run: echo $RELEASE_TIME
 
     - name: Build Docker Image
-      run: docker build . --file TicTacToeBackend/Dockerfile --tag $DOCKER_USER/tictactoebackend:$RELEASE_TIME
+      run: docker build . --file TicTacToeBackend/Dockerfile --tag ${{secrets.DOCKER_USER}}/tictactoebackend:$RELEASE_TIME
       
     - name: Docker Push
-      run: docker push $DOCKER_USER/tictactoebackend:$RELEASE_TIME
+      run: docker push ${{secrets.DOCKER_USER}}/tictactoebackend:$RELEASE_TIME
