@@ -23,6 +23,10 @@ public class UpdateResultService {
 
         for (int i = 0; i < n; i++) {
             if (field.get(i).get(y) == newSymbol) vertical++;
+            if (n == 3 && m == 3 && (x + y) % 2 == 0) {
+                if (field.get(i).get(i) == newSymbol) mainDiagonal++;
+                if (field.get(n - i - 1).get(m - i - 1) == newSymbol) subDiagonal++;
+            }
         }
         for (int j = 0; j < m; j++) {
             if (field.get(x).get(j) == newSymbol) horizontal++;

@@ -71,13 +71,28 @@ class UpdateResultServiceTest {
     }
 
     @Test
+    public void testGuestDiagonal() {
+        // given
+        List<List<Long>> field = List.of(
+                List.of(1L, 0L, 0L),
+                List.of(0L, 1L, 0L),
+                List.of(1L, 0L, 1L)
+        );
+
+        // when
+        String result = updateResultService.getCurrentResult(field, false, 1, 1);
+
+        // then
+        assertEquals(ResultValues.GUEST_WIN.name(), result);
+    }
+
+    @Test
     public void testNotFinished() {
         // given
         List<List<Long>> field = List.of(
                 List.of(1L, 1L, 0L),
-                List.of(0L, 1L, 0L),
-                List.of(0L, 0L, 1L),
-                List.of(0L, 0L, 1L)
+                List.of(0L, 1L, 1L),
+                List.of(1L, 0L, 0L)
         );
 
         // when
