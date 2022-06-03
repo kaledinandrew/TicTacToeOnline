@@ -24,8 +24,12 @@ public class UpdateResultService {
         for (int i = 0; i < n; i++) {
             if (field.get(i).get(y) == newSymbol) vertical++;
             if (n == 3 && m == 3 && (x + y) % 2 == 0) {
-                if (field.get(i).get(i) == newSymbol) mainDiagonal++;
-                if (field.get(n - i - 1).get(m - i - 1) == newSymbol) subDiagonal++;
+                if (x == y) {
+                    if (field.get(i).get(i) == newSymbol) mainDiagonal++;
+                }
+                if (x == 0 && y == 2 || x == 1 && y == 1 || x == 2 && y == 0) {
+                    if (field.get(i).get(m - i - 1) == newSymbol) subDiagonal++;
+                }
             }
         }
         for (int j = 0; j < m; j++) {
