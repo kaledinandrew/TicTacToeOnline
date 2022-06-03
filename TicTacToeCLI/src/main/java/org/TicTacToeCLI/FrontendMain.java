@@ -135,7 +135,7 @@ public class FrontendMain {
                     System.out.print("Введите координаты x, y: ");
                     int width = in.nextInt();
                     int height = in.nextInt();
-                    while (consoleClient.placeSymbol(sessionId, userId, width, height) < 0) {
+                    while (width < 0 || height < 0 || width >= 3 || height >= 3 || consoleClient.placeSymbol(sessionId, userId, width, height) < 0) {
                         System.out.print("Введены неверные координаты!\nПопробуйте еще раз: ");
                         width = in.nextInt();
                         height = in.nextInt();
