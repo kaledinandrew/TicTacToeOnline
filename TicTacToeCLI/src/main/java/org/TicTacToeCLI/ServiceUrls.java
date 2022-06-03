@@ -12,7 +12,7 @@ public class ServiceUrls {
         this.usersLink = baseUrl+"/users";
         this.sessionsLink = baseUrl+"/sessions";
         this.sessionsConnectLink = this.sessionsLink+"/connect";
-        this.placeSymbolLink = this.sessionsLink+"place-symbol";
+        this.placeSymbolLink = this.sessionsLink+"/place-symbol";
     }
 
     public String getServerLink() {
